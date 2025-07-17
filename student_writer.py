@@ -1,6 +1,5 @@
 import streamlit as st
 
-
 # -----------------------------
 # 공통 프롬프트 틀
 # -----------------------------
@@ -32,16 +31,23 @@ BASE_PROMPT = '''
 st.set_page_config(page_title="학생부 문장 생성 프롬프트", layout="centered")
 
 st.title("📄 학생부 문장 생성 프롬프트")
-st.write("학생 활동 내용을 입력하면, ChatGPT에 붙여넣을 수 있는 프롬프트를 자동으로 만들어줍니다.")
+st.write("학생의 활동 내용을 항목별로 입력하면, ChatGPT에 붙여넣을 수 있는 프롬프트를 자동으로 만들어줍니다.")
 
-activity = st.text_area("📝 학생 활동 내용", placeholder="예: 과학 독서 활동 시간에 '인간 본성에 대하여'를 읽고, 유전과 환경의 상호작용을 예로 들어 설명함.")
+# 입력창 3개
+activity1 = st.text_area("📝 활동 내용 1", placeholder="예: 독서활동 - '이기적 유전자'를 읽고 토론에 참여함")
+activity2 = st.text_area("📝 활동 내용 2", placeholder="예: 실험활동 - 생명과학 실험에서 주도적으로 팀을 이끌며 데이터 정리")
+activity3 = st.text_area("📝 활동 내용 3", placeholder="예: 발표활동 - 진로 세미나 발표 준비 과정에서 동료와 협업")
+
 length = st.slider("🔠 원하는 글자 수", min_value=100, max_value=500, value=300, step=50)
 
+# 생성 버튼
 if st.button("🎯 프롬프트 생성"):
-    if not activity.strip():
-        st.warning("활동 내용을 입력해주세요.")
+    # 입력된 내용만 골라서 합치기
+    all_activities = "\n".join([s for s in [activity1, activity2, activity3] if s.strip()])
+    if not all_activities:
+        st.warning("최소한 하나 이상의 활동 내용을 입력해주세요.")
     else:
-        full_prompt = BASE_PROMPT.format(activity=activity.strip(), length=length)
+        full_prompt = BASE_PROMPT.format(activity=all_activities, length=length)
         st.success("아래 프롬프트를 ChatGPT에 붙여넣어 주세요 👇")
         st.code(full_prompt, language="markdown")
         st.download_button(
