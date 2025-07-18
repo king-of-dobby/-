@@ -39,13 +39,6 @@ st.set_page_config(page_title="학생부 문장 생성 프롬프트", layout="ce
 st.title("📄 학생부 문장 생성 프롬프트")
 st.write("학생 활동 내용을 입력하거나 파일을 업로드하면, ChatGPT에 붙여넣을 수 있는 프롬프트를 자동으로 만들어줍니다.")
 
-st.markdown("""
-베타 버전이기 때문에 배포는 아직 멈춰주세요 호호호 잘 되면 돈 받고 팔고 싶다....키키킥  
-집중을 못하고 산만하다, 지각한다 등 부정적인 문장도 발전가능성에 초점을 두어 보완이 됩니다.  
-담임용으로 적합한지는 테스트되지 않았습니다. 과목별 테스트도 되지 않았고 제가 그간 쓴 생기부 문장만 일부 학습한 상태입니다.  
-개선사항은 언제든지 말씀해주세용
-""")
-
 # 텍스트 입력 영역 3개 (세로 배치)
 activity1 = st.text_area("📝 활동 내용 1", height=150)
 activity2 = st.text_area("📝 활동 내용 2", height=150)
@@ -98,10 +91,30 @@ if st.button("🎯 프롬프트 생성"):
         st.success("✅ 아래 프롬프트를 ChatGPT에 붙여넣어 주세요 👇")
         st.code(full_prompt, language="markdown")
 
-        # 복사 버튼 및 다운로드 링크
+        # 복사 버튼 (클립보드 복사)
+        copy_button = f"""
+            <button onclick="navigator.clipboard.writeText(`{full_prompt}`)" 
+                    style="
+                        background-color:#4CAF50;
+                        border:none;
+                        color:white;
+                        padding:10px 20px;
+                        text-align:center;
+                        text-decoration:none;
+                        display:inline-block;
+                        font-size:14px;
+                        margin-top:10px;
+                        margin-right:10px;
+                        border-radius:5px;
+                        cursor:pointer;">
+                📋 프롬프트 복사하기
+            </button>
+        """
+        st.markdown(copy_button, unsafe_allow_html=True)
+
+        # 다운로드 버튼 (텍스트 파일 다운로드)
         b64 = base64.b64encode(full_prompt.encode()).decode()
-        href = f'<button onclick="navigator.clipboard.writeText(atob(\'{b64}\'))">📋 프롬프트 복사</button>'
-        href += f' &nbsp;&nbsp;&nbsp; <a href="data:text/plain;base64,{b64}" download="chatgpt_prompt.txt">💾 다운로드</a>'
+        href = f'<a href="data:text/plain;base64,{b64}" download="chatgpt_prompt.txt" style="text-decoration:none; font-size:14px;">💾 프롬프트 다운로드</a>'
         st.markdown(href, unsafe_allow_html=True)
 
 st.markdown("""
