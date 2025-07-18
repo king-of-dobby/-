@@ -65,7 +65,6 @@ if uploaded_file:
 
         txt_output = tmp_path.replace(".hwp", ".txt")
         try:
-            # hwp5txt 명령어가 시스템에 설치되어 있어야 함
             subprocess.run(["hwp5txt", tmp_path, txt_output], check=True)
             with open(txt_output, "r", encoding="utf-8", errors="ignore") as f:
                 extracted_text = f.read()
@@ -89,33 +88,51 @@ if st.button("🎯 프롬프트 생성"):
     else:
         full_prompt = BASE_PROMPT.format(activity=combined_activity.strip(), length=length)
         st.success("✅ 아래 프롬프트를 ChatGPT에 붙여넣어 주세요 👇")
-        st.code(full_prompt, language="markdown")
+        st.text_area("📋 생성된 프롬프트", full_prompt, height=300, key="prompt_area")
 
-        # 복사 버튼 (클립보드 복사)
-        copy_button = f"""
-            <button onclick="navigator.clipboard.writeText(`{full_prompt}`)" 
+        # 복사 버튼 (JS 사용)
+        escaped_prompt = full_prompt.replace("\\", "\\\\").replace("`", "\\`").replace("\n", "\\n").replace("'", "\\'")
+        copy_js = f"""
+            <script>
+                function copyToClipboard(text) {{
+                    navigator.clipboard.writeText(text).then(function() {{
+                        alert(\"프롬프트가 클립보드에 복사되었습니다!\");
+                    }}, function(err) {{
+                        alert(\"복사 실패: \" + err);
+                    }});
+                }}
+            </script>
+            <button onclick="copyToClipboard(`{escaped_prompt}`)"
                     style="
                         background-color:#4CAF50;
                         border:none;
                         color:white;
                         padding:10px 20px;
-                        text-align:center;
-                        text-decoration:none;
-                        display:inline-block;
-                        font-size:14px;
-                        margin-top:10px;
                         margin-right:10px;
+                        font-size:14px;
                         border-radius:5px;
                         cursor:pointer;">
                 📋 프롬프트 복사하기
             </button>
         """
-        st.markdown(copy_button, unsafe_allow_html=True)
+        st.markdown(copy_js, unsafe_allow_html=True)
 
         # 다운로드 버튼 (텍스트 파일 다운로드)
         b64 = base64.b64encode(full_prompt.encode()).decode()
-        href = f'<a href="data:text/plain;base64,{b64}" download="chatgpt_prompt.txt" style="text-decoration:none; font-size:14px;">💾 프롬프트 다운로드</a>'
-        st.markdown(href, unsafe_allow_html=True)
+        download_button = f"""
+            <a href="data:text/plain;base64,{b64}" download="chatgpt_prompt.txt"
+               style="
+                   background-color:#2196F3;
+                   color:white;
+                   padding:10px 20px;
+                   font-size:14px;
+                   text-decoration:none;
+                   border-radius:5px;
+                   ">
+               💾 프롬프트 다운로드
+            </a>
+        """
+        st.markdown(download_button, unsafe_allow_html=True)
 
 st.markdown("""
     <div style='text-align: center; font-size: 15px;'>
