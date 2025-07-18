@@ -99,7 +99,7 @@ if uploaded_file:
     st.text_area("📖 추출된 텍스트 미리보기", extracted_text, height=200)
 
 # 원하는 글자 수 선택
-length = st.slider("🔠 원하는 글자 수", min_value=100, max_value=500, value=300, step=50)
+length = st.slider("🔠 원하는 글자 수", min_value=100, max_value=1000, value=500, step=50)
 
 # 프롬프트 생성
 if st.button("🎯 프롬프트 생성"):
