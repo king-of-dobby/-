@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 
 # -----------------------------
 # 공통 프롬프트 틀
@@ -42,7 +43,6 @@ length = st.slider("🔠 원하는 글자 수", min_value=100, max_value=500, va
 
 # 생성 버튼
 if st.button("🎯 프롬프트 생성"):
-    # 입력된 내용만 골라서 합치기
     all_activities = "\n".join([s for s in [activity1, activity2, activity3] if s.strip()])
     if not all_activities:
         st.warning("최소한 하나 이상의 활동 내용을 입력해주세요.")
@@ -50,8 +50,26 @@ if st.button("🎯 프롬프트 생성"):
         full_prompt = BASE_PROMPT.format(activity=all_activities, length=length)
         st.success("아래 프롬프트를 ChatGPT에 붙여넣어 주세요 👇")
         st.code(full_prompt, language="markdown")
+
+        # 📋 복사 버튼 추가 (JavaScript)
+        components.html(f"""
+            <textarea id="prompt" style="position:absolute; left:-9999px;">{full_prompt}</textarea>
+            <button onclick="copyPrompt()" style="margin-top:10px;padding:8px 16px;border:none;border-radius:5px;background-color:#4CAF50;color:white;cursor:pointer;">
+                📋 프롬프트 복사
+            </button>
+            <script>
+            function copyPrompt() {{
+                var copyText = document.getElementById("prompt");
+                copyText.select();
+                document.execCommand("copy");
+                alert("프롬프트가 복사되었습니다! ChatGPT에 붙여넣어 주세요.");
+            }}
+            </script>
+        """, height=80)
+
+        # 다운로드 버튼도 유지
         st.download_button(
-            label="📋 프롬프트 복사용 .txt 다운로드",
+            label="⬇️ .txt 파일로 다운로드",
             data=full_prompt,
             file_name="chatgpt_prompt.txt",
             mime="text/plain"
