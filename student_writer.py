@@ -46,15 +46,10 @@ st.markdown("""
 개선사항은 언제든지 말씀해주세용
 """)
 
-
-# 텍스트 입력 영역 3개
-col1, col2, col3 = st.columns(3)
-with col1:
-    activity1 = st.text_area("📝 활동 내용 1", height=150)
-with col2:
-    activity2 = st.text_area("📝 활동 내용 2", height=150)
-with col3:
-    activity3 = st.text_area("📝 활동 내용 3", height=150)
+# 텍스트 입력 영역 3개 (세로 배치)
+activity1 = st.text_area("📝 활동 내용 1", height=150)
+activity2 = st.text_area("📝 활동 내용 2", height=150)
+activity3 = st.text_area("📝 활동 내용 3", height=150)
 
 # 파일 업로드
 uploaded_file = st.file_uploader("📎 또는 파일 업로드 (pdf, xlsx, hwp)", type=["pdf", "xlsx", "hwp"])
@@ -103,9 +98,10 @@ if st.button("🎯 프롬프트 생성"):
         st.success("✅ 아래 프롬프트를 ChatGPT에 붙여넣어 주세요 👇")
         st.code(full_prompt, language="markdown")
 
-        # 복사 버튼을 위한 base64
+        # 복사 버튼 및 다운로드 링크
         b64 = base64.b64encode(full_prompt.encode()).decode()
-        href = f'<a href="data:text/plain;base64,{b64}" download="chatgpt_prompt.txt">📋 프롬프트 복사 또는 다운로드</a>'
+        href = f'<button onclick="navigator.clipboard.writeText(atob(\'{b64}\'))">📋 프롬프트 복사</button>'
+        href += f' &nbsp;&nbsp;&nbsp; <a href="data:text/plain;base64,{b64}" download="chatgpt_prompt.txt">💾 다운로드</a>'
         st.markdown(href, unsafe_allow_html=True)
 
 st.markdown("""
