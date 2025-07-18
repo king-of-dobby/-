@@ -5,6 +5,7 @@ import base64
 import tempfile
 import subprocess
 import os
+from streamlit_copy_to_clipboard import copy_to_clipboard  # 복사 기능 컴포넌트
 
 # -----------------------------
 # 공통 프롬프트 틀
@@ -90,32 +91,8 @@ if st.button("🎯 프롬프트 생성"):
         st.success("✅ 아래 프롬프트를 ChatGPT에 붙여넣어 주세요 👇")
         st.text_area("📋 생성된 프롬프트", full_prompt, height=300, key="prompt_area")
 
-        # 복사 버튼 (JS 사용)
-        escaped_prompt = full_prompt.replace("\\", "\\\\").replace("`", "\\`").replace("\n", "\\n").replace("'", "\\'")
-        copy_js = f"""
-            <script>
-                function copyToClipboard(text) {{
-                    navigator.clipboard.writeText(text).then(function() {{
-                        alert(\"프롬프트가 클립보드에 복사되었습니다!\");
-                    }}, function(err) {{
-                        alert(\"복사 실패: \" + err);
-                    }});
-                }}
-            </script>
-            <button onclick="copyToClipboard(`{escaped_prompt}`)"
-                    style="
-                        background-color:#4CAF50;
-                        border:none;
-                        color:white;
-                        padding:10px 20px;
-                        margin-right:10px;
-                        font-size:14px;
-                        border-radius:5px;
-                        cursor:pointer;">
-                📋 프롬프트 복사하기
-            </button>
-        """
-        st.markdown(copy_js, unsafe_allow_html=True)
+        # 복사 버튼 (streamlit-copy-to-clipboard 사용)
+        copy_to_clipboard(full_prompt, "📋 프롬프트 복사하기")
 
         # 다운로드 버튼 (텍스트 파일 다운로드)
         b64 = base64.b64encode(full_prompt.encode()).decode()
