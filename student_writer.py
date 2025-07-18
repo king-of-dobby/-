@@ -1,13 +1,11 @@
 import streamlit as st
+from streamlit.components.v1 import html
 import fitz  # PyMuPDF for PDF parsing
 import pandas as pd
 import base64
 import tempfile
 import subprocess
 import os
-from streamlit_copy_to_clipboard import copy_to_clipboard  # 복사 기능 컴포넌트
-from streamlit.components.v1 import html
-
 
 # -----------------------------
 # 공통 프롬프트 틀
@@ -33,6 +31,26 @@ BASE_PROMPT = '''
 [출력]
 학생부 문장:
 '''
+
+# -----------------------------
+# 복사 버튼 함수
+# -----------------------------
+def render_copy_button(prompt_text):
+    escaped = prompt_text.replace("`", "\\`").replace("\n", "\\n")
+    button_code = f"""
+    <button onclick="navigator.clipboard.writeText(`{escaped}`)"
+        style="
+            background-color:#4CAF50;
+            border:none;
+            color:white;
+            padding:10px 20px;
+            font-size:14px;
+            border-radius:5px;
+            cursor:pointer;">
+        📋 프롬프트 복사하기
+    </button>
+    """
+    html(button_code)
 
 # -----------------------------
 # Streamlit UI
@@ -93,26 +111,8 @@ if st.button("🎯 프롬프트 생성"):
         st.success("✅ 아래 프롬프트를 ChatGPT에 붙여넣어 주세요 👇")
         st.text_area("📋 생성된 프롬프트", full_prompt, height=300, key="prompt_area")
 
-        # 복사 버튼 (streamlit-copy-to-clipboard 사용)
-        def render_copy_button(prompt_text):
-    escaped = prompt_text.replace("`", "\\`").replace("\n", "\\n")
-    button_code = f"""
-    <button onclick="navigator.clipboard.writeText(`{escaped}`)"
-        style="
-            background-color:#4CAF50;
-            border:none;
-            color:white;
-            padding:10px 20px;
-            font-size:14px;
-            border-radius:5px;
-            cursor:pointer;">
-        📋 프롬프트 복사하기
-    </button>
-    """
-    html(button_code)
-
-render_copy_button(full_prompt)
-
+        # 복사 버튼
+        render_copy_button(full_prompt)
 
         # 다운로드 버튼 (텍스트 파일 다운로드)
         b64 = base64.b64encode(full_prompt.encode()).decode()
