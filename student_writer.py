@@ -34,6 +34,16 @@ st.set_page_config(page_title="학생부 문장 생성 프롬프트", layout="ce
 st.title("📄 학생부 문장 생성 프롬프트")
 st.write("학생의 활동 내용을 항목별로 입력하면, ChatGPT에 붙여넣을 수 있는 프롬프트를 자동으로 만들어줍니다.")
 
+st.markdown("""
+베타 버전이기 때문에 배포는 아직 멈춰주세요 호호호  
+잘 되면 돈 받고 팔고 싶다....키키킥  
+집중을 못하고 산만하다, 지각한다 등 부정적인 문장도 발전가능성에 초점을 두어 보완이 됩니다.  
+담임용으로 적합한지는 테스트되지 않았습니다.  
+과목별 테스트도 되지 않았고 제가 그간 쓴 생기부 문장만 일부 학습한 상태입니다.  
+개선사항은 언제든지 말씀해주세용
+""")
+
+
 # 입력창 3개
 activity1 = st.text_area("📝 활동 내용 1", placeholder="예: 독서활동 - '이기적 유전자'를 읽고 토론에 참여함")
 activity2 = st.text_area("📝 활동 내용 2", placeholder="예: 실험활동 - 생명과학 실험에서 주도적으로 팀을 이끌며 데이터 정리")
@@ -74,3 +84,9 @@ if st.button("🎯 프롬프트 생성"):
             file_name="chatgpt_prompt.txt",
             mime="text/plain"
         )
+
+st.markdown("""
+    <div style='text-align: center; font-size: 15px;'>
+        Copyright 2025. Yoon Ji Young. All rights reserved. 🌻 
+    </div>
+""", unsafe_allow_html=True)
