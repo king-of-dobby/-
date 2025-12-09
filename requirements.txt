@@ -1,4 +1,5 @@
-streamlit
-PyMuPDF
+Flask
+requests
 pandas
-openpyxl
+PyMuPDF
+streamlit
